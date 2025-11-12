@@ -15,8 +15,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 
 # ----------------- Configuration -----------------
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # from Render env
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  # admin telegram id
+BOT_TOKEN = os.getenv("8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus")  # from Render env
+ADMIN_ID = int(os.getenv("6565594143", "0"))  # admin telegram id
 PORT = int(os.getenv("PORT", "8000"))
 HOST_URL = os.getenv("HOST_URL", None)  # optional, used to build game links
 
