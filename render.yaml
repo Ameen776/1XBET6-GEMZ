@@ -1,0 +1,32 @@
+# render.yaml
+services:
+  - type: web
+    name: crash-game-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: 8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus
+      - key: ADMIN_CHAT_ID
+        value: 6565594143
+      - key: SECRET_KEY
+        generateValue: true
+
+  - type: worker
+    name: telegram-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: 8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus
+      - key: ADMIN_CHAT_ID
+        value: 6565594143
+      - key: WEB_SERVICE_URL
+        fromService:
+          name: crash-game-api
+          type: web
+          property: url
