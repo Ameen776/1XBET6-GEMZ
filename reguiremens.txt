@@ -1,4 +1,0 @@
-aiogram==2.25.1
-Flask==2.3.2
-SQLAlchemy==1.4.52
-requests
