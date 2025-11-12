@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Crash — لعبة الطيارة</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0b1220; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;}
+    .card { width: 420px; background: linear-gradient(180deg, #0f1724, #07111a); border-radius:12px; padding:20px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);}
+    h1 { margin:0 0 10px 0; font-size:20px; text-align:center;}
+    .plane { height:120px; display:flex; align-items:center; justify-content:center; }
+    .mult { font-size:36px; font-weight:700; text-align:center; margin:6px 0;}
+    .controls { display:flex; gap:8px; margin-top:12px; }
+    input[type="number"] { flex:1; padding:8px; border-radius:8px; border:none; }
+    button { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+    .btn-start { background:#06b6d4; color:#032; }
+    .btn-cash { background:#10b981; color:#032; flex:1; }
+    .log { margin-top:12px; font-size:13px; color:#cbd5e1; height:70px; overflow:auto; }
+    .bar { height:10px; background: rgba(255,255,255,0.06); border-radius:6px; margin-top:8px; overflow:hidden; }
+    .progress { height:100%; width:0%; background: linear-gradient(90deg,#f97316,#fca5a5); transition: width 0.05s linear;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Crash — لعبة الطيارة 🚀</h1>
+    <div class="plane">
+      <img id="planeImg" src="/static/games/plane.png" alt="plane" style="height:90px; transform-origin:center;"/>
+    </div>
+    <div class="mult" id="mult">x1.00</div>
+    <div class="bar"><div class="progress" id="progress"></div></div>
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <input id="betAmount" type="number" placeholder="المبلغ" />
+      <button id="startBtn" class="btn-start">ابدأ رهان</button>
+    </div>
+    <div class="controls" style="margin-top:8px;">
+      <button id="cashBtn" class="btn-cash" disabled>Cashout</button>
+    </div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <script src="/static/js/crash.js"></script>
+</body>
+</html>
