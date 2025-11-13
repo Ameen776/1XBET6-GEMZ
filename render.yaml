@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: crash-game-webapp
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
