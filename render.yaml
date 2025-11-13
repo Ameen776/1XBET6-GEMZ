@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: telegram-games-bot
+    name: crash-game-animated
     env: node
     plan: free
     buildCommand: npm install
