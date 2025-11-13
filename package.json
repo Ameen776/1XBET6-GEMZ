@@ -1,11 +1,10 @@
 {
-  "name": "telegram-games-bot",
+  "name": "crash-game-bot",
   "version": "1.0.0",
-  "description": "بوت ألعاب تليجرام متكامل",
+  "description": "لعبة CRASH برسومات متحركة",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js",
-    "dev": "nodemon bot.js"
+    "start": "node bot.js"
   },
   "dependencies": {
     "telegraf": "^4.16.3",
