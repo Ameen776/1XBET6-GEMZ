@@ -1,0 +1,13 @@
+# render.yaml
+services:
+  - type: web
+    name: telegram-games-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: "8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus"
+      - key: ADMIN_CHAT_ID
+        value: "6565594143"
