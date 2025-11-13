@@ -17,16 +17,12 @@
             color: white;
             min-height: 100vh;
             line-height: 1.6;
-            overflow-x: hidden;
         }
         
         .app-container {
             max-width: 100%;
             margin: 0 auto;
             padding: 15px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
         
         /* شريط الرأس المحسن */
@@ -82,24 +78,119 @@
             transition: all 0.3s ease;
         }
         
-        /* المحتوى الرئيسي */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        /* شبكة الألعاب */
+        .games-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .game-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e74c3c, #3498db, #2ecc71);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .game-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        
+        .game-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .game-desc {
+            font-size: 12px;
+            color: #bdc3c7;
+            line-height: 1.4;
+        }
+        
+        .coming-soon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+        
+        /* صفحة لعبة CRASH */
+        .crash-page {
+            display: none;
+        }
+        
+        .crash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .crash-balance {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            padding: 10px 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .balance-amount-large {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         /* مشهد الكراش المحسن */
         .crash-scene {
             background: linear-gradient(to bottom, #1a237e 0%, #283593 30%, #303f9f 70%, #3949ab 100%);
-            height: 200px;
+            height: 220px;
             border-radius: 20px;
             position: relative;
             overflow: hidden;
+            margin-bottom: 15px;
             border: 2px solid #5c6bc0;
             box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
-            flex-shrink: 0;
         }
         
         .sky-background {
@@ -108,68 +199,42 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 2%, transparent 10%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 2%, transparent 10%),
-                radial-gradient(circle at 40% 70%, rgba(255,255,255,0.1) 2%, transparent 10%);
         }
         
-        .flying-plane {
+        .arc-plane {
             position: absolute;
-            bottom: 30%;
-            left: 15%;
-            font-size: 40px;
+            left: 5%;
+            bottom: 10%;
+            font-size: 35px;
             z-index: 20;
             filter: drop-shadow(2px 2px 8px rgba(0,0,0,0.6));
-            animation: floatPlane 3s ease-in-out infinite;
-        }
-        
-        @keyframes floatPlane {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg); 
-                bottom: 30%;
-            }
-            25% { 
-                transform: translateY(-15px) rotate(2deg); 
-                bottom: 32%;
-            }
-            50% { 
-                transform: translateY(-25px) rotate(0deg); 
-                bottom: 34%;
-            }
-            75% { 
-                transform: translateY(-15px) rotate(-2deg); 
-                bottom: 32%;
-            }
+            transition: all 0.2s ease-out;
+            transform-origin: center;
         }
         
         .plane-smoke {
             position: absolute;
-            width: 80px;
-            height: 15px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.6), transparent);
+            width: 60px;
+            height: 12px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
             border-radius: 50%;
-            filter: blur(8px);
+            filter: blur(6px);
             z-index: 15;
-            opacity: 0.7;
-            left: 8%;
-            bottom: 32%;
-            animation: smokeMove 2s linear infinite;
+            opacity: 0;
         }
         
-        @keyframes smokeMove {
-            0% { 
-                opacity: 0.7;
-                transform: scaleX(1);
-            }
-            50% { 
-                opacity: 0.4;
-                transform: scaleX(1.2);
-            }
-            100% { 
-                opacity: 0;
-                transform: scaleX(1.5);
-            }
+        .crash-explosion {
+            position: absolute;
+            font-size: 50px;
+            display: none;
+            z-index: 25;
+            animation: explodeAnimation 0.8s ease-out;
+        }
+        
+        @keyframes explodeAnimation {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
         .moving-landscape {
@@ -187,8 +252,7 @@
                     rgba(255,255,255,0.1) 100px
                 ),
                 linear-gradient(to top, #1b5e20, #2e7d32);
-            animation: landscapeMove 20s linear infinite;
-            border-radius: 20px 20px 0 0;
+            animation: landscapeMove 15s linear infinite;
         }
         
         @keyframes landscapeMove {
@@ -196,86 +260,31 @@
             100% { transform: translateX(-50%); }
         }
         
-        .mountains {
-            position: absolute;
-            bottom: 40%;
-            width: 100%;
-            height: 60%;
-            display: flex;
-            align-items: flex-end;
-        }
-        
-        .mountain {
-            flex: 1;
-            height: 100%;
-            background: linear-gradient(to top, #388e3c, #4caf50);
-            clip-path: polygon(0 100%, 50% 0, 100% 100%);
-            margin: 0 -10px;
-            opacity: 0.8;
-        }
-        
-        .crash-explosion {
-            position: absolute;
-            font-size: 60px;
-            display: none;
-            z-index: 25;
-            animation: explodeAnimation 0.8s ease-out;
-        }
-        
-        @keyframes explodeAnimation {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        /* لوحة المعلومات */
-        .info-panel {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
+        /* الإحصائيات */
+        .stats-container {
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 15px;
             padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            flex-shrink: 0;
-        }
-        
-        .multiplier-display {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        
-        .multiplier-label {
-            font-size: 12px;
-            color: #bdc3c7;
-            margin-bottom: 5px;
-        }
-        
-        .multiplier-value {
-            font-size: 28px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #e74c3c, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
-        }
-        
-        /* الإحصائيات */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
+            margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        
         .stat-value {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             margin: 5px 0;
         }
@@ -293,12 +302,111 @@
             color: #bdc3c7;
         }
         
+        /* قائمة المستخدمين */
+        .users-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .users-title {
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+        
+        .users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .user-info-small {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .user-name {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .user-bet {
+            font-size: 11px;
+            color: #bdc3c7;
+        }
+        
+        .user-multiplier {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .multiplier-win {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+        
+        .multiplier-lose {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
         /* لوحة الرهان */
         .betting-panel {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
             padding: 15px;
-            flex-shrink: 0;
+        }
+        
+        .multiplier-display {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .multiplier-label {
+            font-size: 12px;
+            color: #bdc3c7;
+            margin-bottom: 5px;
+        }
+        
+        .multiplier-value {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #e74c3c, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
         }
         
         .bet-input-group {
@@ -446,121 +554,32 @@
         /* الصفحات */
         .page {
             display: none;
-            flex: 1;
-            flex-direction: column;
         }
         
         .page-active {
-            display: flex;
-        }
-        
-        .back-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            align-self: flex-start;
-        }
-        
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* شبكة الألعاب */
-        .games-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .game-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #e74c3c, #3498db, #2ecc71);
-        }
-        
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .game-icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-        
-        .game-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .game-desc {
-            font-size: 11px;
-            color: #bdc3c7;
-            line-height: 1.3;
-        }
-        
-        .coming-soon {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #e74c3c;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 9px;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- شريط المعلومات العلوي -->
-        <div class="top-bar">
-            <div class="user-info">
-                <div class="user-id">ID: <span id="userId">---</span></div>
-                <div class="balance-mini">
-                    <span>💰</span>
-                    <span class="balance-amount-mini" id="currentBalance">1000$</span>
-                </div>
-            </div>
-            <button class="deposit-btn-mini" onclick="showPage('deposit')">
-                💳 إيداع
-            </button>
-        </div>
-
         <!-- القاعة الرئيسية -->
         <div id="mainLobby" class="page page-active">
-            <h2 style="text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, #fff, #bdc3c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🎮 الألعاب المتاحة</h2>
+            <!-- شريط الرأس -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-id">ID: <span id="userId">---</span></div>
+                    <div class="balance-mini">
+                        <span>💰</span>
+                        <span class="balance-amount-mini" id="currentBalance">1000$</span>
+                    </div>
+                </div>
+                <button class="deposit-btn-mini" onclick="showPage('deposit')">
+                    💳 إيداع
+                </button>
+            </div>
+
+            <h2 style="text-align: center; margin-bottom: 25px; background: linear-gradient(135deg, #fff, #bdc3c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🎮 الألعاب المتاحة</h2>
             
             <div class="games-grid">
                 <div class="game-card" onclick="showPage('crash')">
@@ -593,76 +612,88 @@
         </div>
 
         <!-- صفحة لعبة CRASH -->
-        <div id="crashPage" class="page">
-            <button class="back-button" onclick="showPage('mainLobby')">
-                ← العودة
-            </button>
+        <div id="crashPage" class="page crash-page">
+            <!-- رأس اللعبة -->
+            <div class="crash-header">
+                <button class="back-btn" onclick="showPage('mainLobby')">
+                    ← العودة للقاعة
+                </button>
+                <div class="crash-balance">
+                    <div style="font-size: 12px; color: #fff;">رصيدك</div>
+                    <div class="balance-amount-large" id="crashBalance">1000$</div>
+                </div>
+            </div>
             
-            <div class="main-content">
-                <!-- مشهد اللعبة المحسن -->
-                <div class="crash-scene">
-                    <div class="sky-background"></div>
-                    <div class="flying-plane" id="crashPlane">🛩️</div>
-                    <div class="plane-smoke" id="planeSmoke"></div>
-                    <div class="crash-explosion" id="crashExplosion">💥</div>
-                    <div class="moving-landscape"></div>
-                    <div class="mountains">
-                        <div class="mountain"></div>
-                        <div class="mountain"></div>
-                        <div class="mountain"></div>
+            <!-- مشهد اللعبة -->
+            <div class="crash-scene">
+                <div class="sky-background"></div>
+                <div class="arc-plane" id="crashPlane">🛩️</div>
+                <div class="plane-smoke" id="planeSmoke"></div>
+                <div class="crash-explosion" id="crashExplosion">💥</div>
+                <div class="moving-landscape"></div>
+            </div>
+            
+            <!-- الإحصائيات -->
+            <div class="stats-container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">مجموع الرهانات</div>
+                        <div class="stat-value" id="totalBets">15,240$</div>
+                        <div class="stat-label">إجمالي المستخدمين</div>
                     </div>
+                    <div class="stat-item">
+                        <div class="stat-label">إجمالي الأرباح</div>
+                        <div class="stat-value stat-profit" id="totalProfit">8,450$</div>
+                        <div class="stat-label">المستخدمين الناجحين</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">إجمالي الخسائر</div>
+                        <div class="stat-value stat-loss" id="totalLoss">6,790$</div>
+                        <div class="stat-label">المستخدمين الخاسرين</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- قائمة المستخدمين -->
+            <div class="users-section">
+                <div class="users-title">👥 المستخدمين النشطين</div>
+                <div class="users-list" id="usersList">
+                    <!-- سيتم إضافة المستخدمين ديناميكياً -->
+                </div>
+            </div>
+            
+            <!-- لوحة الرهان -->
+            <div class="betting-panel">
+                <div class="multiplier-display">
+                    <div class="multiplier-label">المضاعف الحالي</div>
+                    <div class="multiplier-value" id="currentMultiplier">1.00x</div>
                 </div>
                 
-                <!-- لوحة المعلومات -->
-                <div class="info-panel">
-                    <div class="multiplier-display">
-                        <div class="multiplier-label">المضاعف الحالي</div>
-                        <div class="multiplier-value" id="currentMultiplier">1.00x</div>
-                    </div>
-                    
-                    <!-- الإحصائيات -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">إجمالي الأرباح</div>
-                            <div class="stat-value stat-profit" id="totalProfit">2,450$</div>
-                            <div class="stat-label">المستخدمين النشطين</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">إجمالي الخسائر</div>
-                            <div class="stat-value stat-loss" id="totalLoss">1,230$</div>
-                            <div class="stat-label">المستخدمين النشطين</div>
-                        </div>
-                    </div>
+                <div class="bet-input-group">
+                    <label class="bet-input-label">💰 مبلغ الرهان</label>
+                    <input type="number" class="bet-input" id="betAmount" placeholder="أدخل المبلغ الذي تريد المراهنة به" min="1" max="10000">
                 </div>
                 
-                <!-- لوحة الرهان -->
-                <div class="betting-panel">
-                    <div class="bet-input-group">
-                        <label class="bet-input-label">💰 مبلغ الرهان</label>
-                        <input type="number" class="bet-input" id="betAmount" placeholder="أدخل المبلغ الذي تريد المراهنة به" min="1" max="10000">
-                    </div>
-                    
-                    <div class="quick-bet-buttons">
-                        <button class="quick-bet-btn" onclick="setBetAmount(10)">10$</button>
-                        <button class="quick-bet-btn" onclick="setBetAmount(50)">50$</button>
-                        <button class="quick-bet-btn" onclick="setBetAmount(100)">100$</button>
-                        <button class="quick-bet-btn" onclick="setBetAmount(500)">500$</button>
-                        <button class="quick-bet-btn" onclick="setBetAmount(1000)">1000$</button>
-                        <button class="quick-bet-btn" onclick="setBetAmount(5000)">5000$</button>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="bet-btn" id="placeBetBtn" onclick="placeCrashBet()">
-                            🎯 بدأ الرهان
-                        </button>
-                        <button class="cashout-btn" id="cashoutBtn" onclick="cashOutCrash()" disabled>
-                            🛬 سحب الأموال
-                        </button>
-                    </div>
-                    
-                    <!-- الرسائل -->
-                    <div class="game-message" id="gameMessage"></div>
+                <div class="quick-bet-buttons">
+                    <button class="quick-bet-btn" onclick="setBetAmount(10)">10$</button>
+                    <button class="quick-bet-btn" onclick="setBetAmount(50)">50$</button>
+                    <button class="quick-bet-btn" onclick="setBetAmount(100)">100$</button>
+                    <button class="quick-bet-btn" onclick="setBetAmount(500)">500$</button>
+                    <button class="quick-bet-btn" onclick="setBetAmount(1000)">1000$</button>
+                    <button class="quick-bet-btn" onclick="setBetAmount(5000)">5000$</button>
                 </div>
+                
+                <div class="action-buttons">
+                    <button class="bet-btn" id="placeBetBtn" onclick="placeCrashBet()">
+                        🎯 بدأ الرهان
+                    </button>
+                    <button class="cashout-btn" id="cashoutBtn" onclick="cashOutCrash()" disabled>
+                        🛬 سحب الأموال
+                    </button>
+                </div>
+                
+                <!-- الرسائل -->
+                <div class="game-message" id="gameMessage"></div>
             </div>
         </div>
     </div>
@@ -676,9 +707,23 @@
         let crashBetAmount = 0;
         let crashPoint = 0;
         let crashGameInterval;
+        let planeAnimation = null;
+
+        // بيانات المستخدمين الوهميين
+        const mockUsers = [
+            { id: '7845921036', name: 'أحمد محمد', bet: 150, multiplier: 2.45, win: true },
+            { id: '9201746358', name: 'سارة خالد', bet: 80, multiplier: 1.80, win: true },
+            { id: '6358127490', name: 'محمد علي', bet: 200, multiplier: 0.00, win: false },
+            { id: '4815927036', name: 'فاطمة حسن', bet: 50, multiplier: 3.20, win: true },
+            { id: '2596301478', name: 'خالد إبراهيم', bet: 300, multiplier: 1.50, win: true },
+            { id: '7036925814', name: 'نورة عبدالله', bet: 120, multiplier: 0.00, win: false },
+            { id: '1470258963', name: 'عمر سعيد', bet: 75, multiplier: 2.80, win: true },
+            { id: '8963147025', name: 'لينا محمود', bet: 180, multiplier: 1.20, win: true }
+        ];
 
         // العناصر
         const currentBalanceElement = document.getElementById('currentBalance');
+        const crashBalanceElement = document.getElementById('crashBalance');
         const userIdElement = document.getElementById('userId');
         const crashPlaneElement = document.getElementById('crashPlane');
         const planeSmokeElement = document.getElementById('planeSmoke');
@@ -688,6 +733,8 @@
         const placeBetBtn = document.getElementById('placeBetBtn');
         const cashoutBtn = document.getElementById('cashoutBtn');
         const gameMessageElement = document.getElementById('gameMessage');
+        const usersListElement = document.getElementById('usersList');
+        const totalBetsElement = document.getElementById('totalBets');
         const totalProfitElement = document.getElementById('totalProfit');
         const totalLossElement = document.getElementById('totalLoss');
 
@@ -706,10 +753,60 @@
                 page.classList.remove('page-active');
             });
             document.getElementById(pageId + 'Page').classList.add('page-active');
+            
+            if (pageId === 'crash') {
+                updateCrashBalance();
+                updateUsersList();
+                updateStats();
+            }
         }
 
         function showComingSoon() {
             showGameMessage('🚧 هذه اللعبة قيد التطوير وتأتي قريباً!', 'lose');
+        }
+
+        // تحديث الرصيد في لعبة الكراش
+        function updateCrashBalance() {
+            crashBalanceElement.textContent = currentBalance + '$';
+        }
+
+        // تحديث قائمة المستخدمين
+        function updateUsersList() {
+            usersListElement.innerHTML = '';
+            mockUsers.forEach(user => {
+                const userRow = document.createElement('div');
+                userRow.className = 'user-row';
+                
+                userRow.innerHTML = `
+                    <div class="user-info-small">
+                        <div class="user-avatar">${user.name.charAt(0)}</div>
+                        <div>
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-bet">رهان: ${user.bet}$</div>
+                        </div>
+                    </div>
+                    <div class="user-multiplier ${user.win ? 'multiplier-win' : 'multiplier-lose'}">
+                        ${user.win ? user.multiplier + 'x' : 'انفجر'}
+                    </div>
+                `;
+                
+                usersListElement.appendChild(userRow);
+            });
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            const totalBets = mockUsers.reduce((sum, user) => sum + user.bet, 0);
+            const totalProfit = mockUsers
+                .filter(user => user.win)
+                .reduce((sum, user) => sum + (user.bet * user.multiplier), 0);
+            const totalLoss = mockUsers
+                .filter(user => !user.win)
+                .reduce((sum, user) => sum + user.bet, 0);
+            
+            totalBetsElement.textContent = totalBets.toLocaleString() + '$';
+            totalProfitElement.textContent = Math.floor(totalProfit).toLocaleString() + '$';
+            totalLossElement.textContent = totalLoss.toLocaleString() + '$';
         }
 
         // إدارة الرهانات السريعة
@@ -738,6 +835,7 @@
             crashBetAmount = betAmount;
             currentBalance -= betAmount;
             updateBalanceDisplay();
+            updateCrashBalance();
             
             startCrashGame();
         }
@@ -751,14 +849,52 @@
             crashPlaneElement.style.display = 'block';
             planeSmokeElement.style.display = 'block';
             crashExplosionElement.style.display = 'none';
+            crashPlaneElement.style.left = '5%';
+            crashPlaneElement.style.bottom = '10%';
             cashoutBtn.disabled = false;
             placeBetBtn.disabled = true;
             betAmountInput.disabled = true;
+            
+            // بدأ تحريك الطائرة على شكل قوس
+            startPlaneArcAnimation();
             
             showGameMessage('🚀 الطائرة تقلع... حظاً موفقاً!', 'win');
             
             // بدأ التحديث
             crashGameInterval = setInterval(updateCrashGame, 200);
+        }
+
+        function startPlaneArcAnimation() {
+            let progress = 0;
+            const duration = 3000; // 3 ثواني لدورة كاملة
+            
+            function animatePlane() {
+                if (!crashGameActive) return;
+                
+                progress += 16; // تقريباً 60 FPS
+                const t = progress / duration;
+                
+                // حركة على شكل قوس (شبه قطع مكافئ)
+                const x = 5 + (t * 80); // من 5% إلى 85%
+                const y = Math.sin(t * Math.PI) * 30; // حركة تموجية
+                
+                crashPlaneElement.style.left = x + '%';
+                crashPlaneElement.style.bottom = (10 + y) + '%';
+                
+                // تأثير الدخان
+                planeSmokeElement.style.left = (x - 3) + '%';
+                planeSmokeElement.style.bottom = (10 + y) + '%';
+                planeSmokeElement.style.opacity = '0.6';
+                
+                if (progress < duration) {
+                    planeAnimation = requestAnimationFrame(animatePlane);
+                } else {
+                    progress = 0;
+                    planeAnimation = requestAnimationFrame(animatePlane);
+                }
+            }
+            
+            planeAnimation = requestAnimationFrame(animatePlane);
         }
 
         function updateCrashGame() {
@@ -773,15 +909,10 @@
             // تأثيرات بصرية حسب المضاعف
             if (crashMultiplier > 3) {
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
-                currentMultiplierElement.style.animation = 'pulse 1s infinite';
             }
             if (crashMultiplier > 5) {
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-                currentMultiplierElement.style.animation = 'pulse 0.5s infinite';
             }
-            
-            // تحديث الإحصائيات الوهمية
-            updateMockStats();
             
             // التحقق من الانفجار
             if (parseFloat(crashMultiplier) >= parseFloat(crashPoint)) {
@@ -796,6 +927,9 @@
 
         function endCrashGame(isCashedOut) {
             clearInterval(crashGameInterval);
+            if (planeAnimation) {
+                cancelAnimationFrame(planeAnimation);
+            }
             crashGameActive = false;
             cashoutBtn.disabled = true;
             placeBetBtn.disabled = false;
@@ -817,6 +951,7 @@
             }
             
             updateBalanceDisplay();
+            updateCrashBalance();
             
             // إعادة تعيين بعد 3 ثواني
             setTimeout(() => {
@@ -824,24 +959,12 @@
                 planeSmokeElement.style.display = 'block';
                 crashExplosionElement.style.display = 'none';
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #e74c3c, #f39c12)';
-                currentMultiplierElement.style.animation = 'none';
             }, 3000);
         }
 
         // نظام الرصيد
         function updateBalanceDisplay() {
             currentBalanceElement.textContent = currentBalance + '$';
-        }
-
-        // تحديث الإحصائيات الوهمية
-        function updateMockStats() {
-            // إحصائيات وهمية تتغير مع اللعب
-            const baseProfit = 2450;
-            const baseLoss = 1230;
-            const randomChange = Math.random() * 10;
-            
-            totalProfitElement.textContent = Math.floor(baseProfit + randomChange * 50) + '$';
-            totalLossElement.textContent = Math.floor(baseLoss + randomChange * 30) + '$';
         }
 
         // API Calls
@@ -890,24 +1013,10 @@
                 .catch(error => {
                     console.log('Using default user data');
                 });
-            
-            // تحديث الإحصائيات الوهمية
-            updateMockStats();
         }
 
         // بدأ التطبيق
         init();
-        
-        // إضافة أنيميشن النبض
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.7; transform: scale(1.05); }
-                100% { opacity: 1; transform: scale(1); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
