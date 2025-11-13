@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 لعبة CRASH</title>
+    <title>🎮 لعبة CRASH - الطائرة والجبال</title>
     <style>
         * {
             margin: 0;
@@ -17,51 +17,64 @@
             color: white;
             min-height: 100vh;
             padding: 20px;
+            line-height: 1.6;
         }
         
         .container {
             max-width: 400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .header h1 {
             color: #4CAF50;
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #ccc;
+            font-size: 16px;
         }
         
         .balance-card {
             background: linear-gradient(135deg, #4CAF50, #45a049);
-            padding: 15px;
+            padding: 20px;
             border-radius: 15px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .balance-label {
+            font-size: 16px;
+            opacity: 0.9;
         }
         
         .balance-amount {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             margin: 10px 0;
         }
         
         .game-scene {
-            background: linear-gradient(to bottom, #87CEEB, #1a1a2e);
-            height: 200px;
-            border-radius: 15px;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98D8F0 30%, #1a1a2e 100%);
+            height: 250px;
+            border-radius: 20px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 20px;
-            border: 2px solid #333;
+            margin-bottom: 25px;
+            border: 3px solid #333;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
         }
         
         .sky {
@@ -70,28 +83,44 @@
             left: 0;
             width: 100%;
             height: 70%;
+            overflow: hidden;
         }
         
         .cloud {
             position: absolute;
             color: white;
             font-size: 24px;
+            opacity: 0.8;
+            animation: floatCloud 20s linear infinite;
+        }
+        
+        @keyframes floatCloud {
+            from { transform: translateX(-50px); }
+            to { transform: translateX(450px); }
         }
         
         .plane {
             position: absolute;
             bottom: 30%;
             left: 10%;
-            font-size: 30px;
-            transition: left 0.3s ease-out;
+            font-size: 35px;
+            transition: left 0.5s ease-out;
             z-index: 10;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
         }
         
         .explosion {
             position: absolute;
-            font-size: 40px;
+            font-size: 50px;
             display: none;
             z-index: 20;
+            animation: explode 0.5s ease-out;
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
         .mountains {
@@ -100,49 +129,82 @@
             left: 0;
             width: 100%;
             height: 30%;
-            background: linear-gradient(to top, #2d5a27, #1a3a1a);
-            border-radius: 0 0 15px 15px;
+            display: flex;
+            align-items: flex-end;
         }
         
         .mountain {
-            position: absolute;
-            bottom: 0;
+            flex: 1;
+            text-align: center;
             font-size: 40px;
+            animation: mountainMove 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes mountainMove {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-5px); }
         }
         
         .game-info {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
             margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-label {
+            color: #ccc;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .danger {
+            color: #ff4444 !important;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
         
         .bet-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         
         .bet-btn {
             background: linear-gradient(135deg, #2196F3, #1976D2);
             border: none;
             color: white;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 15px 10px;
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
         
         .bet-btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(33, 150, 243, 0.4);
         }
         
         .bet-btn:active {
@@ -151,43 +213,91 @@
         
         .action-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         
         .cashout-btn {
             background: linear-gradient(135deg, #4CAF50, #45a049);
             border: none;
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 12px;
             font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .cashout-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
         
         .cashout-btn:disabled {
             background: #666;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
         
         .message {
             text-align: center;
-            padding: 10px;
+            padding: 15px;
             margin-top: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: bold;
+            font-size: 16px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .win {
-            background: rgba(76, 175, 80, 0.3);
+            background: rgba(76, 175, 80, 0.2);
             color: #4CAF50;
+            border: 2px solid #4CAF50;
         }
         
         .lose {
-            background: rgba(244, 67, 54, 0.3);
+            background: rgba(244, 67, 54, 0.2);
             color: #f44336;
+            border: 2px solid #f44336;
+        }
+        
+        .stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -195,12 +305,13 @@
     <div class="container">
         <div class="header">
             <h1>🎮 لعبة CRASH</h1>
-            <p>الطائرة المتجهة نحو الجبل!</p>
+            <p>الطائرة المتجهة نحو الجبل! 🚀</p>
         </div>
         
         <div class="balance-card">
-            <div>رصيدك</div>
+            <div class="balance-label">رصيدك الحالي</div>
             <div class="balance-amount" id="balance">1000$</div>
+            <div>اربح أكثر بتحقيق أعلى المضاعفات! 💰</div>
         </div>
         
         <div class="game-scene">
@@ -216,23 +327,23 @@
         
         <div class="game-info">
             <div class="info-row">
-                <span>📈 المضاعف:</span>
-                <span id="multiplier">1.00x</span>
+                <span class="info-label">📈 المضاعف الحالي:</span>
+                <span class="info-value" id="multiplier">1.00x</span>
             </div>
             <div class="info-row">
-                <span>💰 الرهان:</span>
-                <span id="betAmount">0$</span>
+                <span class="info-label">💰 مبلغ الرهان:</span>
+                <span class="info-value" id="betAmount">0$</span>
             </div>
             <div class="info-row">
-                <span>🎯 الربح المحتمل:</span>
-                <span id="potentialWin">0.00$</span>
+                <span class="info-label">🎯 الربح المحتمل:</span>
+                <span class="info-value" id="potentialWin">0.00$</span>
             </div>
         </div>
         
         <div class="bet-buttons" id="betButtons">
-            <button class="bet-btn" onclick="placeBet(10)">10$</button>
-            <button class="bet-btn" onclick="placeBet(50)">50$</button>
-            <button class="bet-btn" onclick="placeBet(100)">100$</button>
+            <button class="bet-btn" onclick="placeBet(10)">🎯 10$</button>
+            <button class="bet-btn" onclick="placeBet(50)">🎯 50$</button>
+            <button class="bet-btn" onclick="placeBet(100)">🎯 100$</button>
         </div>
         
         <div class="action-buttons">
@@ -242,6 +353,24 @@
         </div>
         
         <div class="message" id="message"></div>
+        
+        <div class="stats">
+            <div>📊 إحصائيات اللعبة</div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value" id="gamesPlayed">0</div>
+                    <div class="stat-label">الألعاب</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalWins">0$</div>
+                    <div class="stat-label">الأرباح</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalLosses">0$</div>
+                    <div class="stat-label">الخسائر</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -252,7 +381,7 @@
         let crashPoint = 0;
         let planePosition = 10;
         let gameInterval;
-        let userId = 'web_user'; // في الواقع سيكون من التليجرام
+        let userId = 'web_user';
 
         // العناصر
         const planeElement = document.getElementById('plane');
@@ -265,17 +394,23 @@
         const balanceElement = document.getElementById('balance');
         const skyElement = document.getElementById('sky');
         const mountainsElement = document.getElementById('mountains');
+        const gamesPlayedElement = document.getElementById('gamesPlayed');
+        const totalWinsElement = document.getElementById('totalWins');
+        const totalLossesElement = document.getElementById('totalLosses');
 
-        // إنشاء السحب
+        // إنشاء السحب المتحركة
         function createClouds() {
             skyElement.innerHTML = '';
-            for (let i = 0; i < 5; i++) {
+            const cloudEmojis = ['☁️', '⛅', '🌤️'];
+            
+            for (let i = 0; i < 6; i++) {
                 const cloud = document.createElement('div');
                 cloud.className = 'cloud';
-                cloud.textContent = '☁️';
+                cloud.textContent = cloudEmojis[Math.floor(Math.random() * cloudEmojis.length)];
                 cloud.style.left = Math.random() * 100 + '%';
-                cloud.style.top = Math.random() * 50 + '%';
-                cloud.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                cloud.style.top = Math.random() * 60 + '%';
+                cloud.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                cloud.style.animationDelay = (Math.random() * 20) + 's';
                 skyElement.appendChild(cloud);
             }
         }
@@ -283,12 +418,13 @@
         // إنشاء الجبال
         function createMountains() {
             mountainsElement.innerHTML = '';
-            for (let i = 0; i < 8; i++) {
+            const mountainEmojis = ['🏔️', '⛰️', '🗻'];
+            
+            for (let i = 0; i < 5; i++) {
                 const mountain = document.createElement('div');
                 mountain.className = 'mountain';
-                mountain.textContent = '🏔️';
-                mountain.style.left = (i * 15) + '%';
-                mountain.style.fontSize = (Math.random() * 20 + 30) + 'px';
+                mountain.textContent = mountainEmojis[Math.floor(Math.random() * mountainEmojis.length)];
+                mountain.style.animationDelay = (Math.random() * 3) + 's';
                 mountainsElement.appendChild(mountain);
             }
         }
@@ -296,24 +432,24 @@
         // وضع الرهان
         async function placeBet(amount) {
             if (gameActive) {
-                showMessage('لديك لعبة نشطة بالفعل!', 'lose');
+                showMessage('⚠️ لديك لعبة نشطة بالفعل!', 'lose');
                 return;
             }
 
-            // التحقق من الرصيد
             const userBalance = parseInt(balanceElement.textContent);
             if (userBalance < amount) {
-                showMessage('رصيدك غير كافي!', 'lose');
+                showMessage('❌ رصيدك غير كافي!', 'lose');
                 return;
             }
 
             betAmount = amount;
             betAmountElement.textContent = amount + '$';
             
-            // خصم الرهان من الرصيد
-            await updateBalance(-amount, 'bet');
-            
-            startGame();
+            // خصم الرهان
+            const updateResult = await updateBalance(amount, 'bet');
+            if (updateResult) {
+                startGame();
+            }
         }
 
         // بدأ اللعبة
@@ -333,6 +469,8 @@
             // إخفاء أزرار الرهان
             document.getElementById('betButtons').style.display = 'none';
             
+            showMessage('🚀 الطائرة تقلع... حظاً موفقاً!', 'win');
+            
             // بدأ التحديث
             gameInterval = setInterval(updateGame, 200);
         }
@@ -343,12 +481,19 @@
 
             // زيادة المضاعف وتحريك الطائرة
             multiplier = (parseFloat(multiplier) + 0.05).toFixed(2);
-            planePosition += 2;
+            planePosition += 2.5;
             
             // تحديث الواجهة
-            planeElement.style.left = planePosition + '%';
+            planeElement.style.left = Math.min(planePosition, 85) + '%';
             multiplierElement.textContent = multiplier + 'x';
             potentialWinElement.textContent = (betAmount * multiplier).toFixed(2) + '$';
+            
+            // تغيير لون المضاعف إذا كان مرتفعاً
+            if (multiplier > 5) {
+                multiplierElement.className = 'info-value danger';
+            } else {
+                multiplierElement.className = 'info-value';
+            }
             
             // التحقق من الانفجار
             if (parseFloat(multiplier) >= parseFloat(crashPoint)) {
@@ -370,19 +515,21 @@
 
             if (isCashedOut) {
                 const winAmount = parseFloat((betAmount * multiplier).toFixed(2));
-                showMessage(`مبروك! سحبت ${winAmount}$`, 'win');
+                showMessage(`🎉 مبروك! سحبت ${winAmount}$ عند مضاعف ${multiplier}x`, 'win');
                 await updateBalance(winAmount, 'win');
             } else {
                 planeElement.style.display = 'none';
                 explosionElement.style.display = 'block';
                 explosionElement.style.left = planePosition + '%';
-                showMessage(`انفجرت الطائرة! خسرت ${betAmount}$`, 'lose');
+                showMessage(`💥 انفجرت الطائرة! خسرت ${betAmount}$`, 'lose');
+                await updateBalance(betAmount, 'loss');
             }
             
-            // إعادة عرض أزرار الرهان بعد 2 ثانية
+            // إعادة عرض أزرار الرهان بعد 3 ثانية
             setTimeout(() => {
                 document.getElementById('betButtons').style.display = 'grid';
-            }, 2000);
+                multiplierElement.className = 'info-value';
+            }, 3000);
         }
 
         // عرض الرسالة
@@ -391,7 +538,7 @@
             messageElement.className = 'message ' + type;
         }
 
-        // تحديث الرصيد
+        // تحديث الرصيد والإحصائيات
         async function updateBalance(amount, type) {
             try {
                 const response = await fetch('/api/update-balance', {
@@ -409,23 +556,42 @@
                 const data = await response.json();
                 if (data.success) {
                     balanceElement.textContent = data.balance + '$';
+                    updateStats();
+                    return true;
                 }
             } catch (error) {
-                console.error('Error updating balance:', error);
+                console.error('Error:', error);
                 // تحديث محلي في حالة الخطأ
                 const currentBalance = parseInt(balanceElement.textContent);
-                balanceElement.textContent = (currentBalance + amount) + '$';
+                if (type === 'bet') {
+                    balanceElement.textContent = (currentBalance - amount) + '$';
+                } else if (type === 'win') {
+                    balanceElement.textContent = (currentBalance + amount) + '$';
+                }
+                updateStats();
+                return true;
             }
+            return false;
+        }
+
+        // تحديث الإحصائيات
+        function updateStats() {
+            // هذه القيم ستأتي من السيرفر في التطبيق الحقيقي
+            gamesPlayedElement.textContent = '5';
+            totalWinsElement.textContent = '250$';
+            totalLossesElement.textContent = '100$';
         }
 
         // التهيئة
         function init() {
             createClouds();
             createMountains();
+            updateStats();
             
             // محاكاة بيانات المستخدم من التليجرام
             if (window.Telegram && Telegram.WebApp) {
                 userId = Telegram.WebApp.initDataUnsafe.user.id;
+                Telegram.WebApp.expand();
             }
             
             // جلب بيانات المستخدم
@@ -433,6 +599,12 @@
                 .then(response => response.json())
                 .then(user => {
                     balanceElement.textContent = user.balance + '$';
+                    gamesPlayedElement.textContent = user.gamesPlayed;
+                    totalWinsElement.textContent = user.totalWins + '$';
+                    totalLossesElement.textContent = user.totalLosses + '$';
+                })
+                .catch(error => {
+                    console.log('Using default user data');
                 });
         }
 
