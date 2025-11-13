@@ -6,7 +6,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # قراءة من متغيرات البيئة
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN', '8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN', '8289468105:AAEX0lGF7OkaZ93slM1qao4-v5K1WFnafVk')
 ADMIN_CHAT_ID = int(os.getenv('ADMIN_CHAT_ID', '6565594143'))
 WEB_SERVICE_URL = os.getenv('WEB_SERVICE_URL', 'http://localhost:5000')
 
