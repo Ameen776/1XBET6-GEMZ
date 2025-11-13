@@ -22,7 +22,7 @@ services:
     startCommand: python bot.py
     envVars:
       - key: TELEGRAM_TOKEN
-        value: 8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus
+        value: 8289468105:AAEX0lGF7OkaZ93slM1qao4-v5K1WFnafVk
       - key: ADMIN_CHAT_ID
         value: 6565594143
       - key: WEB_SERVICE_URL
