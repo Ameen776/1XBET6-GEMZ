@@ -2,7 +2,7 @@
 import os
 import requests
 
-TELEGRAM_TOKEN = "8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus"
+TELEGRAM_TOKEN = "8289468105:AAEX0lGF7OkaZ93slM1qao4-v5K1WFnafVk"
 
 def test_bot():
     print("🔍 اختبار البوت...")
