@@ -17,12 +17,16 @@
             color: white;
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
         }
         
         .app-container {
             max-width: 100%;
             margin: 0 auto;
             padding: 15px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
         /* شريط الرأس المحسن */
@@ -34,7 +38,7 @@
             backdrop-filter: blur(10px);
             padding: 12px 20px;
             border-radius: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
@@ -78,74 +82,24 @@
             transition: all 0.3s ease;
         }
         
-        /* شبكة الألعاب المحسنة */
-        .games-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* المحتوى الرئيسي */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .game-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #e74c3c, #3498db, #2ecc71);
-        }
-        
-        .game-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .game-icon {
-            font-size: 45px;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-        
-        .game-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff, #ccc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .game-desc {
-            font-size: 12px;
-            color: #bdc3c7;
-            line-height: 1.4;
         }
         
         /* مشهد الكراش المحسن */
         .crash-scene {
             background: linear-gradient(to bottom, #1a237e 0%, #283593 30%, #303f9f 70%, #3949ab 100%);
-            height: 250px;
+            height: 200px;
             border-radius: 20px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 25px;
             border: 2px solid #5c6bc0;
             box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            flex-shrink: 0;
         }
         
         .sky-background {
@@ -163,65 +117,101 @@
         .flying-plane {
             position: absolute;
             bottom: 30%;
-            left: 10%;
+            left: 15%;
             font-size: 40px;
-            transition: all 0.2s ease-out;
             z-index: 20;
             filter: drop-shadow(2px 2px 8px rgba(0,0,0,0.6));
-            animation: floatPlane 2s ease-in-out infinite;
+            animation: floatPlane 3s ease-in-out infinite;
         }
         
         @keyframes floatPlane {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+                bottom: 30%;
+            }
+            25% { 
+                transform: translateY(-15px) rotate(2deg); 
+                bottom: 32%;
+            }
+            50% { 
+                transform: translateY(-25px) rotate(0deg); 
+                bottom: 34%;
+            }
+            75% { 
+                transform: translateY(-15px) rotate(-2deg); 
+                bottom: 32%;
+            }
         }
         
         .plane-smoke {
             position: absolute;
-            width: 100px;
-            height: 20px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+            width: 80px;
+            height: 15px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.6), transparent);
             border-radius: 50%;
-            filter: blur(5px);
+            filter: blur(8px);
             z-index: 15;
-            opacity: 0.6;
+            opacity: 0.7;
+            left: 8%;
+            bottom: 32%;
+            animation: smokeMove 2s linear infinite;
         }
         
-        .crash-graph {
+        @keyframes smokeMove {
+            0% { 
+                opacity: 0.7;
+                transform: scaleX(1);
+            }
+            50% { 
+                opacity: 0.4;
+                transform: scaleX(1.2);
+            }
+            100% { 
+                opacity: 0;
+                transform: scaleX(1.5);
+            }
+        }
+        
+        .moving-landscape {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
+            width: 200%;
             height: 40%;
-            background: linear-gradient(to top, #1b5e20, #2e7d32);
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255,255,255,0.1) 50px,
+                    rgba(255,255,255,0.1) 100px
+                ),
+                linear-gradient(to top, #1b5e20, #2e7d32);
+            animation: landscapeMove 20s linear infinite;
             border-radius: 20px 20px 0 0;
         }
         
-        .graph-line {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.3) 10px, rgba(255,255,255,0.3) 20px);
+        @keyframes landscapeMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
-        .graph-indicators {
+        .mountains {
             position: absolute;
-            bottom: 0;
-            left: 0;
+            bottom: 40%;
             width: 100%;
-            height: 100%;
+            height: 60%;
             display: flex;
-            justify-content: space-around;
             align-items: flex-end;
-            padding: 0 20px;
         }
         
-        .graph-indicator {
-            width: 2px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 1px;
+        .mountain {
+            flex: 1;
+            height: 100%;
+            background: linear-gradient(to top, #388e3c, #4caf50);
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+            margin: 0 -10px;
+            opacity: 0.8;
         }
         
         .crash-explosion {
@@ -229,7 +219,7 @@
             font-size: 60px;
             display: none;
             z-index: 25;
-            animation: explodeAnimation 0.5s ease-out;
+            animation: explodeAnimation 0.8s ease-out;
         }
         
         @keyframes explodeAnimation {
@@ -243,24 +233,24 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 15px;
             border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
         }
         
         .multiplier-display {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .multiplier-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #bdc3c7;
             margin-bottom: 5px;
         }
         
         .multiplier-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
             background: linear-gradient(135deg, #e74c3c, #f39c12);
             -webkit-background-clip: text;
@@ -268,32 +258,68 @@
             text-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
         }
         
+        /* الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .stat-profit {
+            color: #2ecc71;
+        }
+        
+        .stat-loss {
+            color: #e74c3c;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #bdc3c7;
+        }
+        
+        /* لوحة الرهان */
         .betting-panel {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 15px;
+            flex-shrink: 0;
         }
         
         .bet-input-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .bet-input-label {
             display: block;
             margin-bottom: 8px;
             color: #bdc3c7;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .bet-input {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.95);
             color: #2c3e50;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             text-align: center;
             border: 2px solid transparent;
@@ -309,48 +335,47 @@
         .quick-bet-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         
         .quick-bet-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .quick-bet-btn:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
         }
         
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
         
         .bet-btn {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             border: none;
             color: white;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
         
         .bet-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
         }
         
         .bet-btn:disabled {
@@ -364,18 +389,18 @@
             background: linear-gradient(135deg, #27ae60, #219a52);
             border: none;
             color: white;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
         }
         
         .cashout-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
         }
         
         .cashout-btn:disabled {
@@ -387,11 +412,11 @@
         
         .game-message {
             text-align: center;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             animation: slideInUp 0.5s ease-out;
         }
         
@@ -421,75 +446,99 @@
         /* الصفحات */
         .page {
             display: none;
+            flex: 1;
+            flex-direction: column;
         }
         
         .page-active {
-            display: block;
+            display: flex;
         }
         
         .back-button {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
+            align-self: flex-start;
         }
         
         .back-button:hover {
             background: rgba(255, 255, 255, 0.2);
         }
         
-        /* صفحة الإيداع */
-        .deposit-container {
+        /* شبكة الألعاب */
+        .games-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .game-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .deposit-methods {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .deposit-method {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            border-radius: 15px;
             padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
         }
         
-        .deposit-method:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e74c3c, #3498db, #2ecc71);
         }
         
-        .method-icon {
-            font-size: 30px;
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-icon {
+            font-size: 35px;
             margin-bottom: 10px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        
+        .game-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .game-desc {
+            font-size: 11px;
+            color: #bdc3c7;
+            line-height: 1.3;
         }
         
         .coming-soon {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: #e74c3c;
             color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 9px;
         }
     </style>
 </head>
@@ -511,7 +560,7 @@
 
         <!-- القاعة الرئيسية -->
         <div id="mainLobby" class="page page-active">
-            <h2 style="text-align: center; margin-bottom: 25px; background: linear-gradient(135deg, #fff, #bdc3c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🎮 الألعاب المتاحة</h2>
+            <h2 style="text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, #fff, #bdc3c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🎮 الألعاب المتاحة</h2>
             
             <div class="games-grid">
                 <div class="game-card" onclick="showPage('crash')">
@@ -546,116 +595,74 @@
         <!-- صفحة لعبة CRASH -->
         <div id="crashPage" class="page">
             <button class="back-button" onclick="showPage('mainLobby')">
-                ← العودة للقاعة
+                ← العودة
             </button>
             
-            <div class="info-panel">
-                <h2 style="text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, #e74c3c, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🛩️ لعبة CRASH</h2>
-                
+            <div class="main-content">
                 <!-- مشهد اللعبة المحسن -->
                 <div class="crash-scene">
                     <div class="sky-background"></div>
                     <div class="flying-plane" id="crashPlane">🛩️</div>
                     <div class="plane-smoke" id="planeSmoke"></div>
                     <div class="crash-explosion" id="crashExplosion">💥</div>
-                    <div class="crash-graph">
-                        <div class="graph-line"></div>
-                        <div class="graph-indicators">
-                            <div class="graph-indicator" style="height: 20%;"></div>
-                            <div class="graph-indicator" style="height: 40%;"></div>
-                            <div class="graph-indicator" style="height: 60%;"></div>
-                            <div class="graph-indicator" style="height: 30%;"></div>
-                            <div class="graph-indicator" style="height: 50%;"></div>
-                            <div class="graph-indicator" style="height: 70%;"></div>
-                        </div>
+                    <div class="moving-landscape"></div>
+                    <div class="mountains">
+                        <div class="mountain"></div>
+                        <div class="mountain"></div>
+                        <div class="mountain"></div>
                     </div>
                 </div>
                 
-                <!-- عرض المضاعف -->
-                <div class="multiplier-display">
-                    <div class="multiplier-label">المضاعف الحالي</div>
-                    <div class="multiplier-value" id="currentMultiplier">1.00x</div>
-                </div>
-            </div>
-            
-            <!-- لوحة الرهان -->
-            <div class="betting-panel">
-                <div class="bet-input-group">
-                    <label class="bet-input-label">💰 مبلغ الرهان</label>
-                    <input type="number" class="bet-input" id="betAmount" placeholder="أدخل المبلغ الذي تريد المراهنة به" min="1" max="10000">
-                </div>
-                
-                <div class="quick-bet-buttons">
-                    <button class="quick-bet-btn" onclick="setBetAmount(10)">10$</button>
-                    <button class="quick-bet-btn" onclick="setBetAmount(50)">50$</button>
-                    <button class="quick-bet-btn" onclick="setBetAmount(100)">100$</button>
-                    <button class="quick-bet-btn" onclick="setBetAmount(500)">500$</button>
-                    <button class="quick-bet-btn" onclick="setBetAmount(1000)">1000$</button>
-                    <button class="quick-bet-btn" onclick="setBetAmount(5000)">5000$</button>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="bet-btn" id="placeBetBtn" onclick="placeCrashBet()">
-                        🎯 بدأ الرهان
-                    </button>
-                    <button class="cashout-btn" id="cashoutBtn" onclick="cashOutCrash()" disabled>
-                        🛬 سحب الأموال
-                    </button>
-                </div>
-            </div>
-            
-            <!-- الرسائل -->
-            <div class="game-message" id="gameMessage"></div>
-        </div>
-
-        <!-- صفحة الإيداع -->
-        <div id="depositPage" class="page">
-            <button class="back-button" onclick="showPage('mainLobby')">
-                ← العودة للقاعة
-            </button>
-            
-            <div class="deposit-container">
-                <h2 style="text-align: center; margin-bottom: 25px; background: linear-gradient(135deg, #27ae60, #2ecc71); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💳 نظام الإيداع</h2>
-                
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <div style="font-size: 14px; color: #bdc3c7; margin-bottom: 5px;">الرصيد الحالي</div>
-                    <div style="font-size: 36px; font-weight: bold; color: #2ecc71;" id="depositBalance">1000$</div>
-                    <div style="font-size: 12px; color: #95a5a6; margin-top: 5px;">ID: <span id="depositUserId">---</span></div>
-                </div>
-                
-                <div class="bet-input-group">
-                    <label class="bet-input-label">💵 مبلغ الإيداع</label>
-                    <input type="number" class="bet-input" id="depositAmount" placeholder="أدخل المبلغ الذي تريد إيداعه" min="1">
-                </div>
-                
-                <div style="text-align: center; margin: 25px 0;">
-                    <div style="font-size: 14px; color: #bdc3c7; margin-bottom: 15px;">اختر طريقة الدفع:</div>
+                <!-- لوحة المعلومات -->
+                <div class="info-panel">
+                    <div class="multiplier-display">
+                        <div class="multiplier-label">المضاعف الحالي</div>
+                        <div class="multiplier-value" id="currentMultiplier">1.00x</div>
+                    </div>
                     
-                    <div class="deposit-methods">
-                        <div class="deposit-method" onclick="selectPaymentMethod('binance')">
-                            <div class="method-icon">💰</div>
-                            <div style="font-weight: bold; margin-bottom: 5px;">بايننس</div>
-                            <div style="font-size: 11px; color: #bdc3c7;">محفظة بايننس</div>
+                    <!-- الإحصائيات -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">إجمالي الأرباح</div>
+                            <div class="stat-value stat-profit" id="totalProfit">2,450$</div>
+                            <div class="stat-label">المستخدمين النشطين</div>
                         </div>
-                        
-                        <div class="deposit-method" onclick="selectPaymentMethod('bank')">
-                            <div class="method-icon">🏦</div>
-                            <div style="font-weight: bold; margin-bottom: 5px;">تحويل بنكي</div>
-                            <div style="font-size: 11px; color: #bdc3c7;">التحويل المباشر</div>
-                        </div>
-                        
-                        <div class="deposit-method" onclick="showComingSoon()">
-                            <div class="method-icon">💳</div>
-                            <div style="font-weight: bold; margin-bottom: 5px;">بطاقة ائتمان</div>
-                            <div style="font-size: 11px; color: #bdc3c7;">Visa / Mastercard</div>
-                            <div class="coming-soon">قريباً</div>
+                        <div class="stat-card">
+                            <div class="stat-label">إجمالي الخسائر</div>
+                            <div class="stat-value stat-loss" id="totalLoss">1,230$</div>
+                            <div class="stat-label">المستخدمين النشطين</div>
                         </div>
                     </div>
                 </div>
                 
-                <button class="bet-btn" style="width: 100%; background: linear-gradient(135deg, #3498db, #2980b9);" onclick="processDeposit()">
-                    💳 متابعة إلى الدفع
-                </button>
+                <!-- لوحة الرهان -->
+                <div class="betting-panel">
+                    <div class="bet-input-group">
+                        <label class="bet-input-label">💰 مبلغ الرهان</label>
+                        <input type="number" class="bet-input" id="betAmount" placeholder="أدخل المبلغ الذي تريد المراهنة به" min="1" max="10000">
+                    </div>
+                    
+                    <div class="quick-bet-buttons">
+                        <button class="quick-bet-btn" onclick="setBetAmount(10)">10$</button>
+                        <button class="quick-bet-btn" onclick="setBetAmount(50)">50$</button>
+                        <button class="quick-bet-btn" onclick="setBetAmount(100)">100$</button>
+                        <button class="quick-bet-btn" onclick="setBetAmount(500)">500$</button>
+                        <button class="quick-bet-btn" onclick="setBetAmount(1000)">1000$</button>
+                        <button class="quick-bet-btn" onclick="setBetAmount(5000)">5000$</button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="bet-btn" id="placeBetBtn" onclick="placeCrashBet()">
+                            🎯 بدأ الرهان
+                        </button>
+                        <button class="cashout-btn" id="cashoutBtn" onclick="cashOutCrash()" disabled>
+                            🛬 سحب الأموال
+                        </button>
+                    </div>
+                    
+                    <!-- الرسائل -->
+                    <div class="game-message" id="gameMessage"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -663,20 +670,16 @@
     <script>
         // حالة التطبيق
         let currentBalance = 1000;
-        let userId = 'USER_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        let userId = generateNumericId(10);
         let crashGameActive = false;
         let crashMultiplier = 1.0;
         let crashBetAmount = 0;
         let crashPoint = 0;
-        let crashPlanePosition = 10;
         let crashGameInterval;
-        let selectedPaymentMethod = null;
 
         // العناصر
         const currentBalanceElement = document.getElementById('currentBalance');
-        const depositBalanceElement = document.getElementById('depositBalance');
         const userIdElement = document.getElementById('userId');
-        const depositUserIdElement = document.getElementById('depositUserId');
         const crashPlaneElement = document.getElementById('crashPlane');
         const planeSmokeElement = document.getElementById('planeSmoke');
         const crashExplosionElement = document.getElementById('crashExplosion');
@@ -685,7 +688,17 @@
         const placeBetBtn = document.getElementById('placeBetBtn');
         const cashoutBtn = document.getElementById('cashoutBtn');
         const gameMessageElement = document.getElementById('gameMessage');
-        const depositAmountInput = document.getElementById('depositAmount');
+        const totalProfitElement = document.getElementById('totalProfit');
+        const totalLossElement = document.getElementById('totalLoss');
+
+        // توليد ID رقمي
+        function generateNumericId(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += Math.floor(Math.random() * 10);
+            }
+            return result;
+        }
 
         // إدارة الصفحات
         function showPage(pageId) {
@@ -696,22 +709,12 @@
         }
 
         function showComingSoon() {
-            alert('🚧 هذه اللعبة قيد التطوير وتأتي قريباً!');
+            showGameMessage('🚧 هذه اللعبة قيد التطوير وتأتي قريباً!', 'lose');
         }
 
         // إدارة الرهانات السريعة
         function setBetAmount(amount) {
             betAmountInput.value = amount;
-        }
-
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            document.querySelectorAll('.deposit-method').forEach(el => {
-                el.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                el.style.background = 'rgba(255, 255, 255, 0.1)';
-            });
-            event.currentTarget.style.borderColor = '#3498db';
-            event.currentTarget.style.background = 'rgba(52, 152, 219, 0.2)';
         }
 
         // لعبة CRASH
@@ -743,14 +746,11 @@
             crashGameActive = true;
             crashMultiplier = 1.0;
             crashPoint = (Math.random() * 8 + 1.5).toFixed(2);
-            crashPlanePosition = 10;
             
             // إعادة تعيين المشهد
             crashPlaneElement.style.display = 'block';
             planeSmokeElement.style.display = 'block';
             crashExplosionElement.style.display = 'none';
-            crashPlaneElement.style.left = crashPlanePosition + '%';
-            planeSmokeElement.style.left = (crashPlanePosition - 8) + '%';
             cashoutBtn.disabled = false;
             placeBetBtn.disabled = true;
             betAmountInput.disabled = true;
@@ -758,29 +758,30 @@
             showGameMessage('🚀 الطائرة تقلع... حظاً موفقاً!', 'win');
             
             // بدأ التحديث
-            crashGameInterval = setInterval(updateCrashGame, 150);
+            crashGameInterval = setInterval(updateCrashGame, 200);
         }
 
         function updateCrashGame() {
             if (!crashGameActive) return;
 
-            // زيادة المضاعف وتحريك الطائرة
+            // زيادة المضاعف
             crashMultiplier = (parseFloat(crashMultiplier) + 0.03).toFixed(2);
-            crashPlanePosition += 1.5;
             
             // تحديث الواجهة
-            crashPlaneElement.style.left = Math.min(crashPlanePosition, 85) + '%';
-            planeSmokeElement.style.left = (Math.min(crashPlanePosition, 85) - 8) + '%';
             currentMultiplierElement.textContent = crashMultiplier + 'x';
             
             // تأثيرات بصرية حسب المضاعف
             if (crashMultiplier > 3) {
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+                currentMultiplierElement.style.animation = 'pulse 1s infinite';
             }
             if (crashMultiplier > 5) {
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
                 currentMultiplierElement.style.animation = 'pulse 0.5s infinite';
             }
+            
+            // تحديث الإحصائيات الوهمية
+            updateMockStats();
             
             // التحقق من الانفجار
             if (parseFloat(crashMultiplier) >= parseFloat(crashPoint)) {
@@ -809,7 +810,8 @@
                 crashPlaneElement.style.display = 'none';
                 planeSmokeElement.style.display = 'none';
                 crashExplosionElement.style.display = 'block';
-                crashExplosionElement.style.left = crashPlanePosition + '%';
+                crashExplosionElement.style.left = '50%';
+                crashExplosionElement.style.bottom = '40%';
                 showGameMessage(`💥 انفجرت الطائرة! خسرت ${crashBetAmount}$`, 'lose');
                 updateBalance(crashBetAmount, 'loss');
             }
@@ -821,41 +823,25 @@
                 crashPlaneElement.style.display = 'block';
                 planeSmokeElement.style.display = 'block';
                 crashExplosionElement.style.display = 'none';
-                crashPlaneElement.style.left = '10%';
-                planeSmokeElement.style.left = '2%';
                 currentMultiplierElement.style.background = 'linear-gradient(135deg, #e74c3c, #f39c12)';
                 currentMultiplierElement.style.animation = 'none';
             }, 3000);
         }
 
-        // نظام الرصيد والإيداع
+        // نظام الرصيد
         function updateBalanceDisplay() {
             currentBalanceElement.textContent = currentBalance + '$';
-            depositBalanceElement.textContent = currentBalance + '$';
         }
 
-        function processDeposit() {
-            const amount = parseInt(depositAmountInput.value);
-            if (!amount || amount < 1) {
-                alert('الرجاء إدخال مبلغ إيداع صحيح!');
-                return;
-            }
-
-            if (!selectedPaymentMethod) {
-                alert('الرجاء اختيار طريقة الدفع أولاً!');
-                return;
-            }
-
-            // محاكاة عملية الإيداع
-            currentBalance += amount;
-            updateBalanceDisplay();
-            updateBalance(amount, 'deposit');
+        // تحديث الإحصائيات الوهمية
+        function updateMockStats() {
+            // إحصائيات وهمية تتغير مع اللعب
+            const baseProfit = 2450;
+            const baseLoss = 1230;
+            const randomChange = Math.random() * 10;
             
-            showGameMessage(`✅ تم محاكاة إيداع ${amount}$ بنجاح!`, 'win');
-            
-            setTimeout(() => {
-                showPage('mainLobby');
-            }, 2000);
+            totalProfitElement.textContent = Math.floor(baseProfit + randomChange * 50) + '$';
+            totalLossElement.textContent = Math.floor(baseLoss + randomChange * 30) + '$';
         }
 
         // API Calls
@@ -887,7 +873,6 @@
         function init() {
             // تعيين ID المستخدم
             userIdElement.textContent = userId;
-            depositUserIdElement.textContent = userId;
             
             // محاكاة بيانات المستخدم من التليجرام
             if (window.Telegram && Telegram.WebApp) {
@@ -905,6 +890,9 @@
                 .catch(error => {
                     console.log('Using default user data');
                 });
+            
+            // تحديث الإحصائيات الوهمية
+            updateMockStats();
         }
 
         // بدأ التطبيق
