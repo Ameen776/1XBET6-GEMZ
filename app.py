@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 # قراءة من متغيرات البيئة
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-123')
+SECRET_KEY = os.getenv('SECRET_KEY', '8289468105:AAEX0lGF7OkaZ93slM1qao4-v5K1WFnafVk')
 ADMIN_CHAT_ID = int(os.getenv('ADMIN_CHAT_ID', '6565594143'))
 
 # حالة اللعبة
