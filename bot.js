@@ -1,7 +1,6 @@
-// bot.js - بوت الألعاب الكامل بـ JavaScript
+// bot.js - بوت الألعاب الكامل والمصحح
 const { Telegraf, Markup } = require('telegraf');
 const express = require('express');
-const axios = require('axios');
 
 // التوكن والآيدي
 const TELEGRAM_TOKEN = "8020165788:AAHyM7nKtS9eovxiPkHh0SP84eXnyrBLmus";
@@ -10,9 +9,9 @@ const ADMIN_CHAT_ID = 6565594143;
 const app = express();
 const bot = new Telegraf(TELEGRAM_TOKEN);
 
-// حالة المستخدمين
+// حالة المستخدمين والألعاب
 const users = {};
-const games = {};
+const activeGames = {};
 
 // تهيئة المستخدم
 function initUser(userId) {
@@ -20,46 +19,47 @@ function initUser(userId) {
         users[userId] = {
             balance: 1000,
             gamesPlayed: 0,
-            totalWins: 0
+            totalWins: 0,
+            totalLosses: 0
         };
     }
     return users[userId];
 }
 
-// ↴ ↳ ↲ ↱ ↰ ↴
 // 🎮 لعبة CRASH
 class CrashGame {
-    constructor(userId, bet) {
+    constructor(userId, betAmount) {
         this.userId = userId;
-        this.bet = bet;
+        this.betAmount = betAmount;
         this.multiplier = 1.0;
-        this.crashed = false;
+        this.isActive = true;
         this.crashPoint = (Math.random() * 8 + 1.5).toFixed(2);
         this.startTime = Date.now();
     }
 
     update() {
-        if (this.crashed) return false;
+        if (!this.isActive) return false;
         
-        const elapsed = (Date.now() - this.startTime) / 1000;
-        this.multiplier = (1 + (elapsed * 0.1)).toFixed(2);
+        const timeElapsed = (Date.now() - this.startTime) / 1000;
+        this.multiplier = (1 + (timeElapsed * 0.1)).toFixed(2);
         
-        if (this.multiplier >= this.crashPoint) {
-            this.crashed = true;
+        if (parseFloat(this.multiplier) >= parseFloat(this.crashPoint)) {
+            this.isActive = false;
             return false;
         }
         return true;
     }
 
     cashOut() {
-        if (this.crashed) return 0;
-        const winAmount = (this.bet * this.multiplier).toFixed(2);
+        if (!this.isActive) return 0;
+        this.isActive = false;
+        const winAmount = (this.betAmount * this.multiplier).toFixed(2);
         return parseFloat(winAmount);
     }
 }
 
 // 🎰 لعبة SLOT
-function playSlots(bet) {
+function playSlot(betAmount) {
     const symbols = ['🍒', '🍋', '🍊', '🍇', '🔔', '💎', '7️⃣'];
     const reels = [
         symbols[Math.floor(Math.random() * symbols.length)],
@@ -79,89 +79,80 @@ function playSlots(bet) {
         winMultiplier = 1;
     }
 
-    const winAmount = bet * winMultiplier;
+    const winAmount = betAmount * winMultiplier;
     return { reels, winAmount, winMultiplier };
 }
 
-// 🎲 لعبة النرد
-function playDice(bet, prediction) {
-    const dice1 = Math.floor(Math.random() * 6) + 1;
-    const dice2 = Math.floor(Math.random() * 6) + 1;
-    const total = dice1 + dice2;
-
-    let winAmount = 0;
-    if (prediction === 'high' && total > 7) winAmount = bet * 2;
-    else if (prediction === 'low' && total < 7) winAmount = bet * 2;
-    else if (prediction === '7' && total === 7) winAmount = bet * 4;
-
-    return { dice1, dice2, total, winAmount };
-}
-
-// ♠️♥️♦️♣️ لعبة الروليت
-function playRoulette(bet, betType, number = null) {
-    const numberResult = Math.floor(Math.random() * 37);
-    const colorResult = numberResult === 0 ? 'green' : (numberResult % 2 === 0 ? 'red' : 'black');
-
-    let winAmount = 0;
-    
-    switch(betType) {
-        case 'red':
-            if (colorResult === 'red') winAmount = bet * 2;
-            break;
-        case 'black':
-            if (colorResult === 'black') winAmount = bet * 2;
-            break;
-        case 'number':
-            if (number === numberResult) winAmount = bet * 36;
-            break;
-        case 'even':
-            if (numberResult !== 0 && numberResult % 2 === 0) winAmount = bet * 2;
-            break;
-        case 'odd':
-            if (numberResult % 2 === 1) winAmount = bet * 2;
-            break;
-    }
-
-    return { numberResult, colorResult, winAmount };
-}
-
-// 🎯 أوامر البوت
+// 🎯 أمر START
 bot.start(async (ctx) => {
     const user = initUser(ctx.from.id);
+    
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎮 لعبة Crash', 'game_crash')],
         [Markup.button.callback('🎰 Slot Machines', 'game_slots')],
-        [Markup.button.callback('🎲 النرد', 'game_dice')],
-        [Markup.button.callback('♠️ الروليت', 'game_roulette')],
         [Markup.button.callback('💰 رصيدي', 'balance'), Markup.button.callback('📊 إحصائيات', 'stats')]
     ]);
 
     await ctx.replyWithHTML(
         `🎉 <b>مرحباً ${ctx.from.first_name}!</b>\n\n` +
         `💰 <b>رصيدك:</b> ${user.balance} $\n\n` +
-        `🎮 <b>اختر لعبة:</b>`,
+        `🎮 <b>اختر لعبة للبدء:</b>`,
         keyboard
     );
 });
 
+// 💰 عرض الرصيد
 bot.action('balance', async (ctx) => {
     const user = initUser(ctx.from.id);
+    
+    const keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('🎮 العب الآن', 'menu')],
+        [Markup.button.callback('📊 إحصائيات', 'stats')]
+    ]);
+
     await ctx.editMessageText(
         `💼 <b>رصيدك</b>\n\n` +
         `💰 <b>${user.balance} $</b>\n\n` +
-        `🎮 العب واستمتع!`,
-        { parse_mode: 'HTML' }
+        `استمر في اللعب لزيادة رصيدك! 🎯`,
+        { parse_mode: 'HTML', ...keyboard }
     );
 });
 
+// 📊 الإحصائيات
 bot.action('stats', async (ctx) => {
     const user = initUser(ctx.from.id);
+    
+    const keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('🎮 العب الآن', 'menu')],
+        [Markup.button.callback('💰 رصيدي', 'balance')]
+    ]);
+
     await ctx.editMessageText(
         `📊 <b>إحصائياتك</b>\n\n` +
         `🎮 <b>الألعاب الملعوبة:</b> ${user.gamesPlayed}\n` +
         `🏆 <b>الفوز الكلي:</b> ${user.totalWins} $\n` +
-        `💰 <b>الرصيد الحالي:</b> ${user.balance} $`,
-        { parse_mode: 'HTML' }
+        `💸 <b>الخسارة الكلية:</b> ${user.totalLosses} $\n` +
+        `💰 <b>الرصيد الحالي:</b> ${user.balance} $\n\n` +
+        `📈 <b>صافي الربح:</b> ${(user.totalWins - user.totalLosses).toFixed(2)} $`,
+        { parse_mode: 'HTML', ...keyboard }
+    );
+});
+
+// ↩️ القائمة الرئيسية
+bot.action('menu', async (ctx) => {
+    const user = initUser(ctx.from.id);
+    
+    const keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback('🎮 لعبة Crash', 'game_crash')],
+        [Markup.button.callback('🎰 Slot Machines', 'game_slots')],
+        [Markup.button.callback('💰 رصيدي', 'balance'), Markup.button.callback('📊 إحصائيات', 'stats')]
+    ]);
+
+    await ctx.editMessageText(
+        `🎮 <b>القائمة الرئيسية</b>\n\n` +
+        `💰 <b>رصيدك:</b> ${user.balance} $\n\n` +
+        `اختر لعبة:`,
+        { parse_mode: 'HTML', ...keyboard }
     );
 });
 
@@ -178,7 +169,7 @@ bot.action('game_crash', async (ctx) => {
         `✈️ <b>لعبة CRASH</b>\n\n` +
         `🎯 <b>كيفية اللعب:</b>\n` +
         `• اختر مبلغ الرهان\n` +
-        `• شاهد الطائرة ترتفع\n` +
+        `• شاهد الطائرة ترتفع والمضاعف يزيد\n` +
         `• اسحب أموالك قبل الانفجار\n` +
         `• كلما ارتفعت الطائرة زاد الربح!\n\n` +
         `⚠️ <b>تحذير:</b> إذا انفجرت الطائرة قبل السحب تخسر الرهان!`,
@@ -186,24 +177,29 @@ bot.action('game_crash', async (ctx) => {
     );
 });
 
+// 🎯 وضع الرهان في CRASH
 bot.action(/crash_bet_(\d+)/, async (ctx) => {
     const betAmount = parseInt(ctx.match[1]);
-    const user = initUser(ctx.from.id);
+    const userId = ctx.from.id;
+    const user = initUser(userId);
     
     if (user.balance < betAmount) {
         await ctx.answerCbQuery('❌ رصيد غير كافي!');
         return;
     }
 
+    // خصم الرهان
     user.balance -= betAmount;
     user.gamesPlayed++;
     
-    const game = new CrashGame(ctx.from.id, betAmount);
-    games[ctx.from.id] = game;
+    // إنشاء لعبة جديدة
+    const game = new CrashGame(userId, betAmount);
+    activeGames[userId] = game;
 
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🛬 سحب الأموال', 'crash_cashout')],
-        [Markup.button.callback('🔄 تحديث', 'crash_update')]
+        [Markup.button.callback('🔄 تحديث', 'crash_update')],
+        [Markup.button.callback('↩️ رجوع', 'menu')]
     ]);
 
     let message = `✈️ <b>الطائرة تقلع...</b>\n\n`;
@@ -213,15 +209,22 @@ bot.action(/crash_bet_(\d+)/, async (ctx) => {
     message += `🛬 <b>اضغط سحب الأموال قبل الانفجار!</b>`;
 
     await ctx.editMessageText(message, { parse_mode: 'HTML', ...keyboard });
-    startCrashUpdates(ctx, game);
+    
+    // بدأ تحديث اللعبة
+    startGameInterval(ctx, game);
 });
 
-function startCrashUpdates(ctx, game) {
+// 🔄 تحديث لعبة CRASH
+function startGameInterval(ctx, game) {
     const interval = setInterval(async () => {
         if (!game.update()) {
             clearInterval(interval);
-            const user = initUser(game.userId);
             
+            const user = initUser(game.userId);
+            user.totalLosses += game.betAmount;
+            
+            delete activeGames[game.userId];
+
             const keyboard = Markup.inlineKeyboard([
                 [Markup.button.callback('🎮 العب مجدداً', 'game_crash')],
                 [Markup.button.callback('↩️ القائمة', 'menu')]
@@ -230,8 +233,8 @@ function startCrashUpdates(ctx, game) {
             await ctx.editMessageText(
                 `💥 <b>انفجرت الطائرة!</b>\n\n` +
                 `📈 <b>وصلت إلى:</b> ${game.multiplier}x\n` +
-                `🎯 <b>الرهان:</b> ${game.bet} $\n` +
-                `💰 <b>الخسارة:</b> ${game.bet} $\n\n` +
+                `🎯 <b>الرهان:</b> ${game.betAmount} $\n` +
+                `💰 <b>الخسارة:</b> ${game.betAmount} $\n\n` +
                 `😔 حاول مجدداً!`,
                 { parse_mode: 'HTML', ...keyboard }
             );
@@ -239,19 +242,22 @@ function startCrashUpdates(ctx, game) {
     }, 1000);
 }
 
+// 🛬 سحب الأموال من CRASH
 bot.action('crash_cashout', async (ctx) => {
-    const game = games[ctx.from.id];
+    const userId = ctx.from.id;
+    const game = activeGames[userId];
+    
     if (!game) {
         await ctx.answerCbQuery('❌ لا يوجد لعبة نشطة!');
         return;
     }
 
     const winAmount = game.cashOut();
-    const user = initUser(ctx.from.id);
+    const user = initUser(userId);
     user.balance += winAmount;
     user.totalWins += winAmount;
     
-    delete games[ctx.from.id];
+    delete activeGames[userId];
 
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎮 العب مجدداً', 'game_crash')],
@@ -261,7 +267,7 @@ bot.action('crash_cashout', async (ctx) => {
     await ctx.editMessageText(
         `🎉 <b>مبروك! نجحت في السحب</b>\n\n` +
         `📈 <b>المضاعف:</b> ${game.multiplier}x\n` +
-        `🎯 <b>الرهان:</b> ${game.bet} $\n` +
+        `🎯 <b>الرهان:</b> ${game.betAmount} $\n` +
         `💰 <b>الربح:</b> ${winAmount} $\n` +
         `💼 <b>الرصيد الجديد:</b> ${user.balance} $`,
         { parse_mode: 'HTML', ...keyboard }
@@ -293,9 +299,11 @@ bot.action('game_slots', async (ctx) => {
     );
 });
 
+// 🎰 وضع الرهان في SLOT
 bot.action(/slots_bet_(\d+)/, async (ctx) => {
     const betAmount = parseInt(ctx.match[1]);
-    const user = initUser(ctx.from.id);
+    const userId = ctx.from.id;
+    const user = initUser(userId);
     
     if (user.balance < betAmount) {
         await ctx.answerCbQuery('❌ رصيد غير كافي!');
@@ -305,9 +313,14 @@ bot.action(/slots_bet_(\d+)/, async (ctx) => {
     user.balance -= betAmount;
     user.gamesPlayed++;
     
-    const result = playSlots(betAmount);
+    const result = playSlot(betAmount);
     user.balance += result.winAmount;
-    if (result.winAmount > 0) user.totalWins += result.winAmount;
+    
+    if (result.winAmount > 0) {
+        user.totalWins += result.winAmount;
+    } else {
+        user.totalLosses += betAmount;
+    }
 
     const keyboard = Markup.inlineKeyboard([
         [Markup.button.callback('🎰 العب مجدداً', 'game_slots')],
@@ -330,171 +343,101 @@ bot.action(/slots_bet_(\d+)/, async (ctx) => {
     await ctx.editMessageText(message, { parse_mode: 'HTML', ...keyboard });
 });
 
-// 🎲 لعبة النرد
-bot.action('game_dice', async (ctx) => {
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('⬆️ عالي (>7)', 'dice_high')],
-        [Markup.button.callback('⬇️ منخفض (<7)', 'dice_low')],
-        [Markup.button.callback('🎯 الرقم 7', 'dice_7')],
-        [Markup.button.callback('↩️ رجوع', 'menu')]
-    ]);
-
-    await ctx.editMessageText(
-        `🎲 <b>لعبة النرد</b>\n\n` +
-        `🎯 <b>كيفية اللعب:</b>\n` +
-        `• اختر توقعك لمجموع النردين\n` +
-        `• عالي (>7) = ربح 2x\n` +
-        `• منخفض (<7) = ربح 2x\n` +
-        `• الرقم 7 = ربح 4x\n\n` +
-        `🎲 الرهان: 50 $`,
-        { parse_mode: 'HTML', ...keyboard }
-    );
-});
-
-bot.action(/dice_(high|low|7)/, async (ctx) => {
-    const prediction = ctx.match[1];
-    const betAmount = 50;
-    const user = initUser(ctx.from.id);
-    
-    if (user.balance < betAmount) {
-        await ctx.answerCbQuery('❌ رصيد غير كافي!');
+// 🔄 تحديث لعبة CRASH يدوياً
+bot.action('crash_update', async (ctx) => {
+    const game = activeGames[ctx.from.id];
+    if (!game) {
+        await ctx.answerCbQuery('❌ لا يوجد لعبة نشطة!');
         return;
     }
 
-    user.balance -= betAmount;
-    user.gamesPlayed++;
-    
-    const result = playDice(betAmount, prediction);
-    user.balance += result.winAmount;
-    if (result.winAmount > 0) user.totalWins += result.winAmount;
-
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🎲 العب مجدداً', 'game_dice')],
-        [Markup.button.callback('↩️ القائمة', 'menu')]
-    ]);
-
-    let predictionText = '';
-    switch(prediction) {
-        case 'high': predictionText = 'عالي (>7)'; break;
-        case 'low': predictionText = 'منخفض (<7)'; break;
-        case '7': predictionText = 'الرقم 7'; break;
-    }
-
-    let message = `🎲 <b>${result.dice1} + ${result.dice2} = ${result.total}</b>\n\n`;
-    message += `🎯 <b>توقعك:</b> ${predictionText}\n`;
-    message += `💰 <b>الرهان:</b> ${betAmount} $\n`;
-    
-    if (result.winAmount > 0) {
-        message += `🎉 <b>فزت!</b>\n`;
-        message += `💰 <b>الربح:</b> ${result.winAmount} $\n`;
-    } else {
-        message += `😔 <b>لم تربح هذه المرة</b>\n`;
-    }
-    
-    message += `💼 <b>الرصيد:</b> ${user.balance} $`;
-
-    await ctx.editMessageText(message, { parse_mode: 'HTML', ...keyboard });
+    const currentMultiplier = game.multiplier;
+    await ctx.answerCbQuery(`📈 المضاعف الحالي: ${currentMultiplier}x`);
 });
 
-// ♠️ لعبة الروليت
-bot.action('game_roulette', async (ctx) => {
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🔴 أحمر', 'roulette_red'), Markup.button.callback('⚫ أسود', 'roulette_black')],
-        [Markup.button.callback('⚪ زوجي', 'roulette_even'), Markup.button.callback('⚫ فردي', 'roulette_odd')],
-        [Markup.button.callback('🎯 رقم', 'roulette_number')],
-        [Markup.button.callback('↩️ رجوع', 'menu')]
-    ]);
+// 🏓 أمر PING للتحقق من عمل البوت
+bot.command('ping', (ctx) => {
+    ctx.reply('🏓 البوت يعمل! ✅');
+});
 
-    await ctx.editMessageText(
-        `♠️ <b>لعبة الروليت</b>\n\n` +
-        `🎯 <b>كيفية اللعب:</b>\n` +
-        `• اختر نوع الرهان\n` +
-        `• أحمر/أسود = ربح 2x\n` +
-        `• زوجي/فردي = ربح 2x\n` +
-        `• رقم محدد = ربح 36x\n\n` +
-        `🎲 الرهان: 25 $`,
-        { parse_mode: 'HTML', ...keyboard }
+// ℹ️ أمر HELP
+bot.command('help', (ctx) => {
+    ctx.replyWithHTML(
+        `ℹ️ <b>أوامر البوت:</b>\n\n` +
+        `<code>/start</code> - بدء البوت\n` +
+        `<code>/ping</code> - التحقق من عمل البوت\n` +
+        `<code>/help</code> - المساعدة\n\n` +
+        `🎮 <b>الألعاب المتاحة:</b>\n` +
+        `• 🎯 Crash - لعبة الطائرة\n` +
+        `• 🎰 Slot - ماكينات القمار\n\n` +
+        `💰 <b>كل لاعب يبدأ بـ 1000$</b>`
     );
 });
 
-bot.action(/roulette_(red|black|even|odd)/, async (ctx) => {
-    const betType = ctx.match[1];
-    const betAmount = 25;
-    const user = initUser(ctx.from.id);
-    
-    if (user.balance < betAmount) {
-        await ctx.answerCbQuery('❌ رصيد غير كافي!');
-        return;
-    }
-
-    user.balance -= betAmount;
-    user.gamesPlayed++;
-    
-    const result = playRoulette(betAmount, betType);
-    user.balance += result.winAmount;
-    if (result.winAmount > 0) user.totalWins += result.winAmount;
-
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('♠️ العب مجدداً', 'game_roulette')],
-        [Markup.button.callback('↩️ القائمة', 'menu')]
-    ]);
-
-    let betTypeText = '';
-    switch(betType) {
-        case 'red': betTypeText = '🔴 أحمر'; break;
-        case 'black': betTypeText = '⚫ أسود'; break;
-        case 'even': betTypeText = '⚪ زوجي'; break;
-        case 'odd': betTypeText = '⚫ فردي'; break;
-    }
-
-    let message = `🎲 <b>النتيجة: ${result.numberResult} ${result.colorResult === 'red' ? '🔴' : result.colorResult === 'black' ? '⚫' : '🟢'}</b>\n\n`;
-    message += `🎯 <b>رهانك:</b> ${betTypeText}\n`;
-    message += `💰 <b>المبلغ:</b> ${betAmount} $\n`;
-    
-    if (result.winAmount > 0) {
-        message += `🎉 <b>فزت!</b>\n`;
-        message += `💰 <b>الربح:</b> ${result.winAmount} $\n`;
-    } else {
-        message += `😔 <b>لم تربح هذه المرة</b>\n`;
-    }
-    
-    message += `💼 <b>الرصيد:</b> ${user.balance} $`;
-
-    await ctx.editMessageText(message, { parse_mode: 'HTML', ...keyboard });
-});
-
-// ↩️ العودة للقائمة
-bot.action('menu', async (ctx) => {
-    const user = initUser(ctx.from.id);
-    const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback('🎮 لعبة Crash', 'game_crash')],
-        [Markup.button.callback('🎰 Slot Machines', 'game_slots')],
-        [Markup.button.callback('🎲 النرد', 'game_dice')],
-        [Markup.button.callback('♠️ الروليت', 'game_roulette')],
-        [Markup.button.callback('💰 رصيدي', 'balance'), Markup.button.callback('📊 إحصائيات', 'stats')]
-    ]);
-
-    await ctx.editMessageText(
-        `🎮 <b>القائمة الرئيسية</b>\n\n` +
-        `💰 <b>رصيدك:</b> ${user.balance} $\n\n` +
-        `اختر لعبة:`,
-        { parse_mode: 'HTML', ...keyboard }
-    );
+// معالجة الأخطاء
+bot.catch((err, ctx) => {
+    console.error(`❌ خطأ في البوت:`, err);
+    ctx.reply('❌ حدث خطأ غير متوقع!');
 });
 
 // تشغيل البوت
 bot.launch().then(() => {
-    console.log('🎮 بوت الألعاب يعمل!');
+    console.log('✅ بوت الألعاب يعمل بنجاح!');
+    console.log('🤖 البوت: @' + bot.context.botInfo.username);
 }).catch(err => {
-    console.error('❌ خطأ في تشغيل البوت:', err);
+    console.error('❌ فشل تشغيل البوت:', err);
 });
 
-// إعداد السيرفر
+// إعداد السيرفر الويب
 app.get('/', (req, res) => {
-    res.send('🎮 بوت الألعاب يعمل!');
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>🎮 بوت الألعاب</title>
+            <meta charset="utf-8">
+            <style>
+                body { 
+                    font-family: Arial, sans-serif; 
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white; 
+                    text-align: center; 
+                    padding: 50px;
+                }
+                .container {
+                    background: rgba(255,255,255,0.1);
+                    padding: 30px;
+                    border-radius: 15px;
+                    backdrop-filter: blur(10px);
+                }
+                h1 { font-size: 2.5em; margin-bottom: 20px; }
+                .status { 
+                    background: #4CAF50; 
+                    padding: 10px 20px; 
+                    border-radius: 25px; 
+                    display: inline-block;
+                    margin: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🎮 بوت الألعاب</h1>
+                <div class="status">✅ البوت يعمل بنجاح</div>
+                <p>اذهب إلى تليجرام وابحث عن البوت للبدء في اللعب!</p>
+                <p>🎯 الألعاب المتاحة: Crash, Slot Machines</p>
+            </div>
+        </body>
+        </html>
+    `);
 });
 
+// تشغيل السيرفر
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 السيرفر يعمل على port ${PORT}`);
+    console.log(`🚀 السيرفر يعمل على PORT: ${PORT}`);
 });
+
+// معالجة إيقاف التطبيق
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
